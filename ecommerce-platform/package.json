@@ -1,0 +1,19 @@
+{
+  "name": "ecommerce-platform-monorepo",
+  "version": "1.0.0",
+  "description": "Next-Gen Event-Driven E-Commerce & AI Platform Monorepo",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "commitlint": "commitlint --edit",
+    "local:up": "docker compose -f scripts/docker-compose.local.yml up -d",
+    "local:down": "docker compose -f scripts/docker-compose.local.yml down",
+    "local:logs": "docker compose -f scripts/docker-compose.local.yml logs -f",
+    "seed": "python scripts/seed-data.py"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "husky": "^9.0.11"
+  }
+}

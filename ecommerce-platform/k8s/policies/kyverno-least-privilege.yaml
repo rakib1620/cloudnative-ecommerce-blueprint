@@ -1,0 +1,56 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-root-and-enforce-resources
+  annotations:
+    policies.kyverno.io/title: Disallow Root User & Require Resource Limits
+    policies.kyverno.io/category: DevSecOps Zero-Trust
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Enforces that all pods run as non-root users, drop root capabilities,
+      and specify both memory and CPU requests/limits to protect cluster stability.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-run-as-non-root
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - ecommerce
+      validate:
+        message: "Containers must run as non-root (runAsNonRoot: true) and specify a non-zero runAsUser."
+        pattern:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+            containers:
+              - securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                      - ALL
+
+    - name: require-resource-limits
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - ecommerce
+      validate:
+        message: "CPU and memory resource requests and limits are mandatory for all production pods."
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  requests:
+                    memory: "?*"
+                    cpu: "?*"
+                  limits:
+                    memory: "?*"
+                    cpu: "?*"

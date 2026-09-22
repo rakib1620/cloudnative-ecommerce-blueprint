@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: order-service-rollout
+  namespace: ecommerce
+spec:
+  replicas: 5
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: ecommerce-platform/order-service:v1.0.0
+          ports:
+            - containerPort: 8083
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+  strategy:
+    canary:
+      # Step progression: 5% -> pause 5m -> 20% -> pause 10m -> 100%
+      steps:
+        - setWeight: 5
+        - pause: { duration: 5m }
+        - setWeight: 20
+        - pause: { duration: 10m }
+      # Automated Rollback on HTTP 5xx or latency degradation
+      analysis:
+        templates:
+          - templateName: http-5xx-rate-check
+        args:
+          - name: service-name
+            value: order-service
