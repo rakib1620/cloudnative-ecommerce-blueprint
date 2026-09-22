@@ -1,0 +1,6 @@
+# Global owners
+* @rakib1620
+
+# Payment & Cloud Infrastructure strictly owned by rakib1620
+/apps/payment-service/ @rakib1620
+/infra/terraform/ @rakib1620
