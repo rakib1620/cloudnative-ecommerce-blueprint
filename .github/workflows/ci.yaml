@@ -1,0 +1,8 @@
+name: DevSecOps CI Pipeline
+on: [push, pull_request]
+
+jobs:
+  1. Commitlint Check
+  2. Auth Service Go Test
+  3. AI Search Service (pytest --cov-fail-under=80)
+  4. Trivy Vulnerability Security Scan (exit-code: 1)
