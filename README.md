@@ -110,7 +110,7 @@ flowchart TB
   - Trunk-Based Development workflow with short-lived atomic PRs.
   - Commit governance enforced via Commitlint and Husky (`feat:`, `fix:`, `chore:`).
   - Branch protection & path-based approval enforcement via `.github/CODEOWNERS`.
-- [ ] **Phase 2: DevSecOps CI Pipeline (Shift-Left Security)**
+- [x] **Phase 2: DevSecOps CI Pipeline (Shift-Left Security)**
   - Pre-commit linters (`golangci-lint`, `ESLint`, `Ruff`).
   - Unit test coverage gates (minimum 80% threshold).
   - Multi-stage minimal non-root container builds (`USER 10001`).
