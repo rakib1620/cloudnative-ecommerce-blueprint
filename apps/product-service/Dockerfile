@@ -1,11 +1,14 @@
 FROM node:20-alpine
 
-# Non-root user setup
+# ফোল্ডার তৈরি করে তার মালিকানা 'node' ইউজারকে দেওয়া হলো
+WORKDIR /app
+RUN chown -R node:node /app
+
+# এবার নিরাপদে সাধারণ ইউজার হয়ে যাওয়া হলো
 USER node
-WORKDIR /home/node/app
 
 COPY --chown=node:node package*.json ./
-RUN npm install --only=production
+RUN npm install --omit=dev
 
 COPY --chown=node:node src/ ./src/
 
