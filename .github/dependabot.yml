@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # ১. পাইথন AI সার্চ সার্ভিসের লাইব্রেরি অটো-আপডেট
+  - package-ecosystem: "pip"
+    directory: "/apps/ai-search-service"
+    schedule:
+      interval: "weekly"
+
+  # ২. Node.js প্রোডাক্ট সার্ভিসের লাইব্রেরি অটো-আপডেট
+  - package-ecosystem: "npm"
+    directory: "/apps/product-service"
+    schedule:
+      interval: "weekly"
+
+  # ৩. Go Auth সার্ভিসের লাইব্রেরি অটো-আপডেট
+  - package-ecosystem: "gomod"
+    directory: "/apps/auth-service"
+    schedule:
+      interval: "weekly"
+
+  # ৪. GitHub Actions CI পাইপলাইন অটো-আপডেট
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
