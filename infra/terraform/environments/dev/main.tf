@@ -7,13 +7,12 @@ terraform {
     }
   }
 
-  # In AWS production, this points to S3 backend created via s3_dynamodb module:
-  # backend "s3" {
-  #   bucket         = "ecommerce-platform-dev-tfstate"
-  #   key            = "state/terraform.tfstate"
-  #   region         = "us-east-1"
-  #   dynamodb_table = "ecommerce-platform-dev-tflocks"
-  # }
+  backend "s3" {
+    bucket         = "ecommerce-platform-dev-tfstate-931092012480"
+    key            = "dev/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "ecommerce-platform-dev-tflocks"
+  }
 }
 
 provider "aws" {

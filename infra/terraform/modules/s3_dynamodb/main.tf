@@ -1,4 +1,3 @@
-# Remote State & Lock Module
 terraform {
   required_version = ">= 1.7.0"
   required_providers {
@@ -16,12 +15,13 @@ variable "project_name" {
 
 variable "environment" {
   type    = string
-  default = "prod"
+  default = "dev"
 }
 
-# S3 Bucket for Terraform State & Backups
+data "aws_caller_identity" "current" {}
+
 resource "aws_s3_bucket" "tf_state" {
-  bucket = "${var.project_name}-${var.environment}-tfstate"
+  bucket = "${var.project_name}-${var.environment}-tfstate-${data.aws_caller_identity.current.account_id}"
 
   lifecycle {
     prevent_destroy = true
@@ -60,7 +60,6 @@ resource "aws_s3_bucket_public_access_block" "tf_state_block_public" {
   restrict_public_buckets = true
 }
 
-# DynamoDB Table for State Locking
 resource "aws_dynamodb_table" "tf_locks" {
   name         = "${var.project_name}-${var.environment}-tflocks"
   billing_mode = "PAY_PER_REQUEST"
