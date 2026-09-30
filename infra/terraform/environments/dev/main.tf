@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.50"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 
   backend "s3" {
@@ -25,16 +29,16 @@ module "vpc" {
   vpc_cidr    = "10.0.0.0/16"
 }
 
-# module "eks" {
-#   source          = "../../modules/eks"
-#   cluster_name    = "ecommerce-eks-dev"
-#   cluster_version = "1.30"
-#   vpc_id          = module.vpc.vpc_id
-#   subnet_ids      = module.vpc.private_subnets
-# }
-# 
-# module "karpenter" {
-#   source            = "../../modules/karpenter"
-#   cluster_name      = "ecommerce-eks-dev"
-#   oidc_provider_arn = module.eks.oidc_provider_arn
-# }
+module "eks" {
+  source          = "../../modules/eks"
+  cluster_name    = "ecommerce-eks-dev"
+  cluster_version = "1.30"
+  vpc_id          = module.vpc.vpc_id
+  subnet_ids      = module.vpc.private_subnets
+}
+
+module "karpenter" {
+  source            = "../../modules/karpenter"
+  cluster_name      = "ecommerce-eks-dev"
+  oidc_provider_arn = module.eks.oidc_provider_arn
+}
