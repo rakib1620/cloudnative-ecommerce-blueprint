@@ -3,10 +3,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "oidc_provider_arn" {
-  type = string
-}
-
 # Karpenter Node IAM Role (Used by launched EC2 Spot & On-Demand instances)
 resource "aws_iam_role" "karpenter_node" {
   name = "${var.cluster_name}-karpenter-node"
@@ -40,6 +36,7 @@ resource "aws_iam_role_policy_attachment" "karpenter_node_ECR" {
 resource "aws_sqs_queue" "karpenter_interruption" {
   name                      = "${var.cluster_name}-karpenter-interruption"
   message_retention_seconds = 300
+  sqs_managed_sse_enabled   = true
 }
 
 output "karpenter_node_role_arn" {

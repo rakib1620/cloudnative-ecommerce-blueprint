@@ -63,6 +63,9 @@ resource "aws_s3_bucket_public_access_block" "tf_state_block_public" {
 resource "aws_dynamodb_table" "tf_locks" {
   name         = "${var.project_name}-${var.environment}-tflocks"
   billing_mode = "PAY_PER_REQUEST"
+  point_in_time_recovery {
+    enabled = true
+  }
   hash_key     = "LockID"
 
   attribute {

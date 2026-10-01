@@ -1,0 +1,23 @@
+# ==============================================================================
+# Enterprise Security Audit Exceptions (ADR: Architectural Decision Records)
+# ==============================================================================
+
+# EKS API Public Endpoint & CIDR
+# Justification: Remote DevOps administration without costly AWS DirectConnect/Site-to-Site VPN.
+# Production IAM RBAC and AWS STS authentication enforce cluster API security.
+AVD-AWS-0040
+AVD-AWS-0041
+
+# EKS Secrets KMS Envelope Encryption
+# Justification: FinOps baseline for dev environment. AWS KMS CMK adds monthly fixed costs.
+AVD-AWS-0039
+
+# S3 & DynamoDB Customer Managed Key (CMK)
+# Justification: FinOps optimization. State is already encrypted at rest via AWS-managed AES256.
+AVD-AWS-0132
+AVD-AWS-0025
+
+# S3 Bucket Access Logging & VPC Flow Logs
+# Justification: Non-production environment. Flow Logs & Access Logging destination S3 ingestion costs are saved.
+AVD-AWS-0089
+AVD-AWS-0178
