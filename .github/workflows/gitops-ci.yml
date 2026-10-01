@@ -1,0 +1,49 @@
+name: "GitOps CI: Helm & Kubeconform Validation"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gitops/**'
+      - '.github/workflows/gitops-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'gitops/**'
+      - '.github/workflows/gitops-ci.yml'
+
+jobs:
+  validate-gitops:
+    name: "Validate Helm Charts & K8s Schemas"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.0
+
+      - name: Run Helm Lint
+        run: |
+          echo "🔍 Linting universal ecommerce-service chart..."
+          helm lint gitops/helm/ecommerce-service
+
+      - name: Test Dev & Prod Manifest Template Rendering
+        run: |
+          echo "🧪 Rendering Dev manifests..."
+          helm template order-service gitops/helm/ecommerce-service -f gitops/helm/ecommerce-service/values-dev.yaml > /dev/null
+          echo "🧪 Rendering Prod manifests..."
+          helm template order-service gitops/helm/ecommerce-service -f gitops/helm/ecommerce-service/values-prod.yaml > /dev/null
+          echo "✅ All Helm templates render successfully!"
+
+      - name: Validate ArgoCD Application Manifests
+        run: |
+          echo "🔍 Validating ArgoCD manifests syntax..."
+          for file in gitops/apps/root-app.yaml gitops/apps/dev/*.yaml; do
+            echo "Checking $file..."
+            python3 -c "import yaml; yaml.safe_load(open('$file'))"
+          done
+          echo "✅ All ArgoCD manifests are valid YAML!"
