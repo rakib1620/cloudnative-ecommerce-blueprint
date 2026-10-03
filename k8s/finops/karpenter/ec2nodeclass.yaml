@@ -1,0 +1,40 @@
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: default
+spec:
+  # Amazon Linux 2023 (Optimized for EKS 1.30+)
+  amiFamily: AL2023
+
+  # Phase 4-এর তৈরি করা Karpenter Node IAM Role
+  role: ecommerce-eks-dev-karpenter-node
+
+  # Subnet Discovery: Phase 4 VPC প্রাইভেট সাবনেটগুলোর ট্যাগ
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: ecommerce-eks-dev
+
+  # Security Group Discovery: EKS ক্লাস্টারের সিকিউরিটি গ্রুপ
+  securityGroupSelectorTerms:
+    - tags:
+        kubernetes.io/cluster/ecommerce-eks-dev: owned
+    - tags:
+        kubernetes.io/cluster/ecommerce-eks-dev: shared
+
+  # Phase 4-এর SQS Interruption Queue (Spot termination warnings)
+  interruptionQueue: ecommerce-eks-dev-karpenter-interruption
+
+  # Root Volume Encryption (DevSecOps Compliance)
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 50Gi
+        volumeType: gp3
+        encrypted: true
+        deleteOnTermination: true
+
+  # Resource Tagging for FinOps Cost Allocation
+  tags:
+    Environment: dev
+    Project: cloudnative-ecommerce
+    ManagedBy: Karpenter

@@ -1,0 +1,23 @@
+# OpenCost FinOps Configuration for E-Commerce Platform
+opencost:
+  exporter:
+    defaultClusterId: "ecommerce-eks-dev"
+    extraEnv:
+      AWS_REGION: "us-east-1"
+      SPOT_DATA_FEED_ENABLED: "true"
+      CURRENCY_CODE: "USD"
+
+  ui:
+    enabled: true
+
+  service:
+    type: ClusterIP
+    port: 9003
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
