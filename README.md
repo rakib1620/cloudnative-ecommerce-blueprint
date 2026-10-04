@@ -115,43 +115,43 @@ flowchart TB
   - Unit test coverage gates (minimum 80% threshold).
   - Multi-stage minimal non-root container builds (`USER 10001`).
   - Automated vulnerability scanning using Aquasecurity Trivy.
-- [ ] **Phase 3: Supply Chain Integrity & Artifact Management**
+- [x] **Phase 3: Supply Chain Integrity & Artifact Management**
   - Amazon ECR tag immutability.
   - Container cryptographic image signing via Cosign (SLSA Level 3).
   - Automated patching with Dependabot / Renovate.
-- [ ] **Phase 4: Production-Grade IaC with Terraform**
+- [x] **Phase 4: Production-Grade IaC with Terraform**
   - Multi-AZ VPC (Public, Private, Database subnets) with NAT Gateway.
   - EKS v1.30+ cluster with OIDC and IAM Roles for Service Accounts (IRSA).
   - S3 remote state management with AES-256 encryption and DynamoDB locking.
-- [ ] **Phase 5: Next-Gen FinOps with Karpenter & Kubecost**
+- [x] **Phase 5: Next-Gen FinOps with Karpenter & Kubecost**
   - Sub-minute dynamic EC2 node provisioning with Karpenter.
   - Spot instance orchestration with SQS interruption queues.
   - Pod-level cost attribution and budget threshold alerting.
-- [ ] **Phase 6: Centralized Zero-Trust Secrets Management**
+- [x] **Phase 6: Centralized Zero-Trust Secrets Management**
   - Zero plaintext secrets policy.
   - External Secrets Operator (ESO) syncing from AWS Secrets Manager.
   - Secret rotation strategies.
-- [ ] **Phase 7: GitOps & Progressive Rollouts**
+- [x] **Phase 7: GitOps & Progressive Rollouts**
   - ArgoCD App-of-Apps architectural pattern.
   - Multi-environment Helm and Kustomize overlays.
   - Argo Rollouts canary deployments (5% -> 20% -> 100%) with automated rollback.
-- [ ] **Phase 8: Event-Driven Microservices & Cloud-Native DBs**
+- [x] **Phase 8: Event-Driven Microservices & Cloud-Native DBs**
   - Declarative Strimzi Kafka cluster and topics (`order.created`, `payment.completed`).
   - CloudNativePG (PostgreSQL Operator) with Point-in-Time Recovery (PITR).
   - Idempotent consumers and Dead Letter Queues (DLQ).
-- [ ] **Phase 9: AI-Powered Copilot & Semantic Search Service**
+- [x] **Phase 9: AI-Powered Copilot & Semantic Search Service**
   - FastAPI vector search microservice.
   - Qdrant Vector Database StatefulSet deployment.
   - KEDA queue-driven event autoscaler.
-- [ ] **Phase 10: Full-Stack Observability**
+- [x] **Phase 10: Full-Stack Observability**
   - OpenTelemetry (OTel) distributed tracing instrumentation.
   - Prometheus & Grafana golden signals dashboard (Latency, Traffic, Errors, Saturation).
   - Centralized log streaming with Grafana Loki and Tempo.
-- [ ] **Phase 11: SRE, Chaos Engineering & Disaster Recovery**
+- [x] **Phase 11: SRE, Chaos Engineering & Disaster Recovery**
   - Strict SLOs (99.9% availability, p95 < 300ms latency).
   - Chaos Mesh synthetic failure injections and self-healing validation.
   - Velero disaster recovery backup and restore to S3.
-- [ ] **Phase 12: DevSecOps Admission Control & Least Privilege**
+- [x] **Phase 12: DevSecOps Admission Control & Least Privilege**
   - Kyverno Policy-as-Code admission controller.
   - Zero-Trust NetworkPolicies isolating sensitive services (e.g. Payment).
 
