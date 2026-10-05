@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ecommerce-slo-alerts
+  namespace: monitoring
+  labels:
+    role: alert-rules
+    app.kubernetes.io/name: prometheus
+spec:
+  groups:
+    - name: ecommerce-availability-slo
+      rules:
+        # 1. Error Budget Burn Rate Alert (High Burn: Consumes 14% budget in 1 hour)
+        - alert: HighErrorBudgetBurnRate
+          expr: |
+            (
+              sum(rate(http_requests_total{status=~"5..",namespace="ecommerce-dev"}[1h]))
+              /
+              sum(rate(http_requests_total{namespace="ecommerce-dev"}[1h]))
+            ) > (1 - 0.999) * 14.4
+          for: 2m
+          labels:
+            severity: critical
+            tier: sre
+          annotations:
+            summary: "Order Service Error Budget is burning rapidly!"
+            description: "High error rate (> 1.44%) detected over 1 hour. SLO 99.9% is at immediate risk."
+
+        # 2. Latency SLO Alert (p95 Latency > 500ms)
+        - alert: LatencySloBreached
+          expr: |
+            histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace="ecommerce-dev"}[5m])) by (le)) > 0.5
+          for: 3m
+          labels:
+            severity: warning
+            tier: sre
+          annotations:
+            summary: "p95 Latency breached 500ms SLA threshold"
+            description: "95% of customer checkout requests are taking longer than 500ms over a 5-minute rolling window."

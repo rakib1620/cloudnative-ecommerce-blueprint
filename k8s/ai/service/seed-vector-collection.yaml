@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: qdrant-collection-initializer
+  namespace: ecommerce-dev
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: collection-creator
+          image: curlimages/curl:8.6.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for Qdrant Vector DB to become healthy..."
+              until curl -s http://qdrant.ecommerce-dev.svc.cluster.local:6333/healthz; do
+                echo "Qdrant is initializing, sleeping 5 seconds..."
+                sleep 5
+              done
+
+              echo "Creating Qdrant vector collection: ecommerce-products..."
+              curl -s -X PUT http://qdrant.ecommerce-dev.svc.cluster.local:6333/collections/ecommerce-products \
+                -H "Content-Type: application/json" \
+                -d '{
+                  "vectors": {
+                    "size": 384,
+                    "distance": "Cosine"
+                  }
+                }'
+
+              echo "Qdrant vector collection created successfully!"
+              curl -s http://qdrant.ecommerce-dev.svc.cluster.local:6333/collections/ecommerce-products

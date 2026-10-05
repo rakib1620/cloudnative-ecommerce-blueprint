@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-topic-provisioner
+  namespace: ecommerce-dev
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: topic-creator
+          image: apache/kafka:3.7.0
+          command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Waiting for Kafka broker to be ready..."
+              /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list || sleep 10
+
+              echo "Creating enterprise ecommerce topics..."
+              # 1. Main Order Ingestion Topic (3 partitions for horizontal consumer scale)
+              /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists \
+                --topic order.created --partitions 3 --replication-factor 1
+
+              # 2. Payment Confirmation Topic
+              /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists \
+                --topic order.paid --partitions 3 --replication-factor 1
+
+              # 3. Dead Letter Queue Topic (Isolates poisoned/failed messages)
+              /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists \
+                --topic order.dlq --partitions 1 --replication-factor 1
+
+              echo "All Kafka topics provisioned successfully!"
+              /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list

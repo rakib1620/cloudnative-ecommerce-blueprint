@@ -1,0 +1,15 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: order-service-pod-kill
+  namespace: ecommerce-dev
+spec:
+  action: pod-kill
+  mode: one
+  selector:
+    namespaces:
+      - ecommerce-dev
+    labelSelectors:
+      app.kubernetes.io/name: order-service
+  scheduler:
+    cron: "@every 5m"

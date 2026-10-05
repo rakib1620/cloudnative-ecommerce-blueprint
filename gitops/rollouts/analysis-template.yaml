@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: http-success-rate-check
+  namespace: ecommerce-dev
+spec:
+  metrics:
+    - name: success-rate
+      interval: 30s
+      successCondition: result[0] <= 0.01 # Error rate must be <= 1%
+      failureLimit: 2 # Abort rollout if SLA fails 2 consecutive times
+      provider:
+        prometheus:
+          address: http://prometheus-server.monitoring.svc.cluster.local:9090
+          query: |
+            sum(rate(http_requests_total{status=~"5.*",app="order-service"}[1m])) 
+            / 
+            sum(rate(http_requests_total{app="order-service"}[1m]))
