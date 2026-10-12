@@ -1,16 +1,16 @@
 import sys
-from pathlib import Path
+import os
 
-# Ensure module path resolution works across all pytest runners
-sys.path.insert(0, str(Path(__file__).parent))
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add current directory (src) to sys.path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi.testclient import TestClient
 
 try:
-    from src.main import app
-except ModuleNotFoundError:
     from main import app
+except ImportError:
+    from src.main import app
 
 client = TestClient(app)
 
