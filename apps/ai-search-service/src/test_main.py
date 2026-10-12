@@ -1,9 +1,18 @@
+import sys
+from pathlib import Path
+
+# Ensure module path resolution works across all pytest runners
+sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from fastapi.testclient import TestClient
 
-from src.main import app
+try:
+    from src.main import app
+except ModuleNotFoundError:
+    from main import app
 
 client = TestClient(app)
-
 
 def test_health_check():
     response = client.get("/health")
@@ -11,7 +20,6 @@ def test_health_check():
     data = response.json()
     assert data["status"] == "UP"
     assert data["service"] == "ai-search-service"
-
 
 def test_semantic_search():
     payload = {"query": "mechanical keyboard for office typing", "top_k": 3}
