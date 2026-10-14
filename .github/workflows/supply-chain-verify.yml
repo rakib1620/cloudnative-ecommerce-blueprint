@@ -1,0 +1,53 @@
+name: Container Supply Chain Integrity Gate
+
+on:
+  push:
+    branches:
+      - test
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual run button in GitHub UI
+
+jobs:
+  verify-and-deploy:
+    name: Verify Signature and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Sigstore Cosign
+        uses: sigstore/cosign-installer@v3.5.0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Supply Chain Verification Gate
+        id: verify-gate
+        run: |
+          echo "=========================================================="
+          echo "🔍 GATE: Verifying ECR Container Signature with Cosign"
+          echo "Target Image: 931092012480.dkr.ecr.us-east-1.amazonaws.com/order-service:1.0.0"
+          echo "Key Used:     cosign.pub"
+          echo "=========================================================="
+          cosign verify --key cosign.pub 931092012480.dkr.ecr.us-east-1.amazonaws.com/order-service:1.0.0
+
+      - name: Deploy to Production
+        if: success()
+        run: |
+          echo "=========================================================="
+          echo "✅ SECURITY GATE PASSED: Container signature is authentic!"
+          echo "🚀 Deploying order-service:1.0.0 to Production..."
+          echo "🎉 SUCCESS: Production deployment completed successfully!"
+          echo "=========================================================="

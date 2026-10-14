@@ -45,3 +45,4 @@ Thumbs.db
 *.key
 *.cert
 cosign.key
+*.key
