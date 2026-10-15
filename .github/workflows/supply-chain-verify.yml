@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install Sigstore Cosign
         uses: sigstore/cosign-installer@v3.5.0
